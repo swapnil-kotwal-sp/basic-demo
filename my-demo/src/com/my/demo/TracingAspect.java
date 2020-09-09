@@ -15,7 +15,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.apache.log4j.Logger;
 
 /**
- * An aspect that adds tracing to all connector methods. This uses a
+ * An aspect that adds tracing to all methods. This uses a
  * "pertypewithin" aspect, which associates the aspect state (in this case, the
  * log) with each type.
  * 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * avoid infinite recursion, etc...
  */
 @Aspect("pertypewithin(!is(InterfaceType) && !is(EnumType) && (!@com.my.demo.Untraced "
-        + "(openconnector..* || sailpoint..*)))")
+        + "(openpackage..* || mypackage..*)))")
 @Untraced
 public class TracingAspect {
 
@@ -66,7 +66,7 @@ public class TracingAspect {
     // might (in very specific cases) lead to recursion but more generally just
     // confusing.
     @Pointcut("execution(* *(..)) && !execution(String toString()) && !execution(* access$*(..)) "
-            + "&& !@annotation(connector.common.logging.Untraced)")
+            + "&& !@annotation(com.my.demo.Untraced)")
     void tracedMethods() {
     }
 
