@@ -1,5 +1,3 @@
-/** (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. */
-
 package com.my.demo;
 
 import java.text.MessageFormat;
