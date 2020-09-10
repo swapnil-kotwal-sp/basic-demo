@@ -64,7 +64,7 @@ dependencies {
     ajc "org.aspectj:aspectjtools:$aspectjVersion"
     compile "org.aspectj:aspectjrt:$aspectjVersion"
     compile "org.aspectj:aspectjweaver:$aspectjVersion"
-    aspects project('my-demo2')
+    aspects project('my-demo')
 }
 
 sourceSets {
@@ -87,7 +87,7 @@ compileJava {
                 maxmem: "1024m", fork: "true", Xlint: "ignore",
                 destDir: sourceSets.main.output.classesDirs.asPath,
                 //my-common.jar consist of my own AspectTracing.class
-                aspectPath: "$projectDir/my-demo/src/com/my/demo/TracingAspect.java",
+                aspectPath: "/Users/swapnil.kotwal/Downloads/my-demo-1.0.0.jar",
                 //aspectPath: configurations.aspects.asPath,
                 sourceRootCopyFilter: "**/*.java",
                 classpath: configurations.compile.asPath,

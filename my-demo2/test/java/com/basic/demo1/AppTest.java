@@ -4,7 +4,8 @@
 package com.basic.demo;
 
 import org.testng.annotations.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.*;]
+import com.my.demo2.App2;
 
 public class AppTest {
     @Test public void appHasAGreeting() {

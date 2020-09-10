@@ -1,5 +1,3 @@
-/** (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. */
-
 package com.my.demo;
 
 import java.text.MessageFormat;
@@ -12,25 +10,13 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
-//import org.apache.logging.log4j.Logger;
-import org.apache.log4j.Logger;
 
-/**
- * An aspect that adds tracing to all connector methods. This uses a
- * "pertypewithin" aspect, which associates the aspect state (in this case, the
- * log) with each type.
- * 
- * The pertypewithin causes all classes that don't have the Untraced annotation
- * to be woven. The pointcuts further limit the use of the tracing loggers to
- * avoid infinite recursion, etc...
- */
-@Aspect("pertypewithin(!is(InterfaceType) && !is(EnumType) && (!@com.my.demo.Untraced "
-        + "(openconnector..* || sailpoint..*)))")
+
+@Aspect("pertypewithin(!is(InterfaceType) && !is(EnumType) && ( com.my.demo1 || com.my.demo2))")
 @Untraced
 public class TracingAspect {
 
-    private Logger conLogger;
+    private MyLogger myLogger;
     private static final String ENTERING_PREFIX = "Entering {0}";
     private static final String EXITING_PREFIX = "Exiting {0}";
     private static final String ARGUMENTS = ": Arguments =>";
@@ -49,7 +35,7 @@ public class TracingAspect {
      */
     @After("staticInit()")
     public void initLogger(JoinPoint.StaticPart jps) {
-        conLogger = Logger.getLogger(TracingAspect.class);
+        myLogger = MyLogger.getLogger(jps.getSignature().getDeclaringTypeName());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -67,8 +53,7 @@ public class TracingAspect {
     // Also, don't trace the compile-time inserted 'access$nnn' methods. That
     // might (in very specific cases) lead to recursion but more generally just
     // confusing.
-    @Pointcut("execution(* *(..)) && !execution(String toString()) && !execution(* access$*(..)) "
-            + "&& !@annotation(connector.common.logging.Untraced)")
+    @Pointcut("execution(* *(..)) && !execution(String toString()) && !execution(* access$*(..)) ")
     void tracedMethods() {
     }
 
@@ -76,43 +61,48 @@ public class TracingAspect {
 
     @Before("tracedConstructors()")
     public void traceConstructorEntry(JoinPoint thisJoinPoint) {
-        if (null != conLogger){}
-           // conLogger.trace(() -> entering(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs()));
+        if (null != myLogger) {
+            myLogger.trace(() -> entering(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs()));
+        }
     }
 
     @AfterReturning("tracedConstructors()")
     public void traceConstructorExit(JoinPoint thisJoinPoint) {
-        if (null != conLogger){}
-           // conLogger.trace(() -> exiting(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs(), null));
+        if (null != myLogger) {
+            myLogger.trace(() -> exiting(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs(), null));
+        }
     }
 
     @AfterThrowing(pointcut = "tracedConstructors()", throwing = "t")
     public void traceConstructorThrow(JoinPoint thisJoinPoint, Throwable t) {
-        if (null != conLogger){}
-           /* conLogger.trace(() -> MessageFormat.format(THROWING, thisJoinPoint.getSignature().getName()) + " - "
-                    + t.toString());*/
+        if (null != myLogger) {
+            myLogger.trace(() -> MessageFormat.format(THROWING, thisJoinPoint.getSignature().getName()) + " - "
+                    + t.toString());
+        }
     }
 
     @Before("tracedMethods()")
     public void traceMethodEntry(JoinPoint thisJoinPoint) {
-        if (null != conLogger){}
-            //conLogger.trace(() -> entering(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs()));
+        if (null != myLogger) {
+            myLogger.trace(() -> entering(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs()));
+        }
     }
 
     @AfterReturning(pointcut = "tracedMethods()", returning = "r")
     public void traceMethodExit(JoinPoint thisJoinPoint, Object r) {
         // Add sensitive return value to log context
 
-        if (null != conLogger){
-            //conLogger.trace(() -> exiting(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs(), r));
+        if (null != myLogger){
+            myLogger.trace(() -> exiting(thisJoinPoint.getSignature().getName(), thisJoinPoint.getArgs(), r));
         }
     }
 
     @AfterThrowing(pointcut = "tracedMethods()", throwing = "t")
     public void traceMethodThrow(JoinPoint thisJoinPoint, Throwable t) {
-        if (null != conLogger){}
-           /* conLogger.trace(() -> MessageFormat.format(THROWING, thisJoinPoint.getSignature().getName()) + " - "
-                    + t.toString());*/
+        if (null != myLogger) {
+            myLogger.trace(() -> MessageFormat.format(THROWING, thisJoinPoint.getSignature().getName()) + " - "
+                    + t.toString());
+        }
     }
 
     // End of Advice

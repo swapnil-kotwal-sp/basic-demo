@@ -5,10 +5,11 @@ package com.basic.demo;
 
 import org.testng.annotations.*;
 import static org.testng.Assert.*;
+import com.my.demo.App;
 
 public class AppTest {
     @Test public void appHasAGreeting() {
-        App1 classUnderTest = new App1();
+        App classUnderTest = new App();
         assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
     }
 }
