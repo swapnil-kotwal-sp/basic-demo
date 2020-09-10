@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
-
 @Aspect("pertypewithin(!is(InterfaceType) && !is(EnumType) && ( com.my.demo1 || com.my.demo2))")
 @Untraced
 public class TracingAspect {
@@ -53,7 +52,8 @@ public class TracingAspect {
     // Also, don't trace the compile-time inserted 'access$nnn' methods. That
     // might (in very specific cases) lead to recursion but more generally just
     // confusing.
-    @Pointcut("execution(* *(..)) && !execution(String toString()) && !execution(* access$*(..)) ")
+    @Pointcut("execution(* *(..)) && !execution(String toString()) && !execution(* access$*(..)) "
+            + "&& !@annotation(com.my.demo.Untraced)")
     void tracedMethods() {
     }
 

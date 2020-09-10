@@ -76,8 +76,8 @@ sourceSets {
     }
 }
 
-compileJava {
-    dependsOn configurations.ajc.getTaskDependencyFromProjectDependency(true, "compileJava")
+jar {
+    dependsOn compileJava,':my-demo:jar'
 
     doLast{
         System.out.println("Java Version: " + JavaVersion.current());
@@ -86,9 +86,7 @@ compileJava {
         ant.iajc(
                 maxmem: "1024m", fork: "true", Xlint: "ignore",
                 destDir: sourceSets.main.output.classesDirs.asPath,
-                //my-common.jar consist of my own AspectTracing.class
-                aspectPath: "/Users/swapnil.kotwal/Downloads/my-demo-1.0.0.jar",
-                //aspectPath: configurations.aspects.asPath,
+                aspectPath: configurations.aspects.asPath,
                 sourceRootCopyFilter: "**/*.java",
                 classpath: configurations.compile.asPath,
                 source: project.sourceCompatibility,
